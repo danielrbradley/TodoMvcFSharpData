@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>TodoMvcBackend</RootNamespace>
     <AssemblyName>TodoMvcBackend</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>TodoMvcBackend</Name>
     <TargetFrameworkProfile />
@@ -33,19 +33,6 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>..\..\bin\TodoMvcBackend.xml</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Library.fs" />
-    <None Include="Script.fsx" />
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -70,4 +57,895 @@
   </Target>
   -->
   <Import Project="..\..\.paket\paket.targets" />
+  <ItemGroup>
+    <Compile Include="JsonValueSerialisation.fs" />
+    <Compile Include="OwinSetup.fs" />
+    <None Include="paket.references" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="System.Web.Http.Owin">
+              <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Owin\lib\net45\System.Web.Http.Owin.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="System.Web.Http">
+              <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core\lib\net45\System.Web.Http.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Formatting">
+              <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http">
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETPortable'">
+      <ItemGroup>
+        <Reference Include="System.Net.Http.Formatting">
+          <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client\lib\portable-wp8+netcore45+net45+wp81+wpa81\System.Net.Http.Formatting.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'WindowsPhoneApp'">
+      <ItemGroup>
+        <Reference Include="System.Net.Http.Formatting">
+          <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client\lib\portable-wp8+netcore45+net45+wp81+wpa81\System.Net.Http.Formatting.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Extensions">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\net40\System.Net.Http.Extensions.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.Primitives">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\net40\System.Net.Http.Primitives.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.WebRequest">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\net40\System.Net.Http.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Extensions">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.Primitives">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http">
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.WebRequest">
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETPortable'">
+      <Choose>
+        <When Condition="$(TargetFrameworkProfile) == 'Profile88' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Extensions">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Extensions.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.Primitives">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Primitives.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkProfile) == 'net45+win8' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Extensions">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net45+win8\System.Net.Http.Extensions.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.Primitives">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net45+win8\System.Net.Http.Primitives.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Extensions">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net45+win8+wpa81\System.Net.Http.Extensions.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.Primitives">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net45+win8+wpa81\System.Net.Http.Primitives.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoAndroid'">
+      <ItemGroup>
+        <Reference Include="System.Net.Http.Extensions">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\monoandroid\System.Net.Http.Extensions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net.Http.Primitives">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\monoandroid\System.Net.Http.Primitives.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net.Http">
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoTouch'">
+      <ItemGroup>
+        <Reference Include="System.Net.Http.Extensions">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\monotouch\System.Net.Http.Extensions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net.Http.Primitives">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\monotouch\System.Net.Http.Primitives.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net.Http">
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Windows'">
+      <ItemGroup>
+        <Reference Include="System.Net.Http.Extensions">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\win8\System.Net.Http.Extensions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net.Http.Primitives">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\win8\System.Net.Http.Primitives.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'WindowsPhoneApp'">
+      <Choose>
+        <When Condition="$(TargetPlatformVersion) == '7.1'">
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Extensions">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\sl4-windowsphone71\System.Net.Http.Extensions.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.Primitives">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\sl4-windowsphone71\System.Net.Http.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="System.Net.Http.Extensions">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\wpa81\System.Net.Http.Extensions.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Net.Http.Primitives">
+              <HintPath>..\..\packages\Microsoft.Net.Http\lib\wpa81\System.Net.Http.Primitives.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Silverlight'">
+      <ItemGroup>
+        <Reference Include="System.Net.Http.Extensions">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Extensions.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net.Http.Primitives">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.Primitives.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Net.Http">
+          <HintPath>..\..\packages\Microsoft.Net.Http\lib\portable-net40+sl4+win8+wp71+wpa81\System.Net.Http.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\net40\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\net40\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\net40\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETPortable'">
+      <Choose>
+        <When Condition="$(TargetFrameworkProfile) == 'net40+sl4+win8' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkProfile) == 'Profile88' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8+wp71+wpa81\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8+wp71+wpa81\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8+wp71+wpa81\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkProfile) == 'net40+sl4+win8+wp8+wpa81' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8+wp8+wpa81\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8+wp8+wpa81\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl4+win8+wp8+wpa81\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkProfile) == 'net40+sl5+win8+wp8+wpa81' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl5+win8+wp8+wpa81\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl5+win8+wp8+wpa81\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+sl5+win8+wp8+wpa81\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkProfile) == 'net40+win8' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+win8\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+win8\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+win8\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkProfile) == 'net40+win8+wp8+wpa81' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+win8+wp8+wpa81\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+win8+wp8+wpa81\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\portable-net40+win8+wp8+wpa81\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoAndroid'">
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoTouch'">
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Windows'">
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'WindowsPhoneApp'">
+      <Choose>
+        <When Condition="$(TargetPlatformVersion) == '7.1'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl4-windowsphone71\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl4-windowsphone71\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl4-windowsphone71\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Silverlight'">
+      <Choose>
+        <When Condition="$(SilverlightVersion) == 'v4.0'">
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl4\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl4\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl4\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="System.IO">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl5\System.IO.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Runtime">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl5\System.Runtime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Threading.Tasks">
+              <HintPath>..\..\packages\Microsoft.Bcl\lib\sl5\System.Threading.Tasks.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json">
+              <HintPath>..\..\packages\Newtonsoft.Json\lib\net20\Newtonsoft.Json.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json">
+              <HintPath>..\..\packages\Newtonsoft.Json\lib\net35\Newtonsoft.Json.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json">
+              <HintPath>..\..\packages\Newtonsoft.Json\lib\net35\Newtonsoft.Json.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json">
+              <HintPath>..\..\packages\Newtonsoft.Json\lib\net40\Newtonsoft.Json.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json">
+              <HintPath>..\..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETPortable'">
+      <Choose>
+        <When Condition="$(TargetFrameworkProfile) == 'Profile136' And $(TargetPlatformIdentifier) == 'Portable' And $(TargetPlatformVersion) == '7.0'">
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json">
+              <HintPath>..\..\packages\Newtonsoft.Json\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json">
+              <HintPath>..\..\packages\Newtonsoft.Json\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Windows'">
+      <ItemGroup>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\..\packages\Newtonsoft.Json\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'WindowsPhoneApp'">
+      <ItemGroup>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\..\packages\Newtonsoft.Json\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Silverlight'">
+      <ItemGroup>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\..\packages\Newtonsoft.Json\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="Microsoft.Owin">
+              <HintPath>..\..\packages\Microsoft.Owin\lib\net45\Microsoft.Owin.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="Owin">
+              <HintPath>..\..\packages\Owin\lib\net40\Owin.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="Microsoft.Owin.Host.SystemWeb">
+              <HintPath>..\..\packages\Microsoft.Owin.Host.SystemWeb\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="FSharp.Data">
+              <HintPath>..\..\packages\FSharp.Data\lib\net40\FSharp.Data.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+			<Reference Include="FSharp.Data.DesignTime">
+              <HintPath>..\..\packages\FSharp.Data\lib\net40\FSharp.Data.DesignTime.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+            <Reference Include="System.Xml.Linq">
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETPortable'">
+      <ItemGroup>
+        <Reference Include="FSharp.Data">
+          <HintPath>..\..\packages\FSharp.Data\lib\portable-net40+sl5+wp8+win8\FSharp.Data.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+		<Reference Include="FSharp.Data.DesignTime">
+          <HintPath>..\..\packages\FSharp.Data\lib\portable-net40+sl5+wp8+win8\FSharp.Data.DesignTime.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Windows'">
+      <ItemGroup>
+        <Reference Include="FSharp.Data">
+          <HintPath>..\..\packages\FSharp.Data\lib\portable-net40+sl5+wp8+win8\FSharp.Data.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'WindowsPhoneApp'">
+      <ItemGroup>
+        <Reference Include="FSharp.Data">
+          <HintPath>..\..\packages\FSharp.Data\lib\portable-net40+sl5+wp8+win8\FSharp.Data.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Silverlight'">
+      <ItemGroup>
+        <Reference Include="FSharp.Data">
+          <HintPath>..\..\packages\FSharp.Data\lib\portable-net40+sl5+wp8+win8\FSharp.Data.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework'">
+      <Choose>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v1.1'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v2.0'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v3.5'">
+        </When>
+        <When Condition="$(TargetFrameworkVersion) == 'v4.0' And $(TargetFrameworkProfile) == 'Client'">
+        </When>
+        <Otherwise>
+          <ItemGroup>
+            <Reference Include="Zlib.Portable">
+              <HintPath>..\..\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+              <Private>True</Private>
+              <Paket>True</Paket>
+            </Reference>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETPortable'">
+      <ItemGroup>
+        <Reference Include="Zlib.Portable">
+          <HintPath>..\..\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoAndroid'">
+      <ItemGroup>
+        <Reference Include="Zlib.Portable">
+          <HintPath>..\..\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'MonoTouch'">
+      <ItemGroup>
+        <Reference Include="Zlib.Portable">
+          <HintPath>..\..\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Windows'">
+      <ItemGroup>
+        <Reference Include="Zlib.Portable">
+          <HintPath>..\..\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'WindowsPhoneApp'">
+      <ItemGroup>
+        <Reference Include="Zlib.Portable">
+          <HintPath>..\..\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == 'Silverlight'">
+      <ItemGroup>
+        <Reference Include="Zlib.Portable">
+          <HintPath>..\..\packages\Zlib.Portable\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
 </Project>

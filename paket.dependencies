@@ -1,10 +1,16 @@
 source https://nuget.org/api/v2
 
 nuget FSharp.Formatting
-nuget NUnit 
+nuget NUnit
 nuget NUnit.Runners
 nuget Nuget.CommandLine
 nuget FAKE
 nuget SourceLink.Fake
+nuget Microsoft.AspNet.WebApi.Owin
+nuget Microsoft.Owin.Host.SystemWeb
+nuget Unquote
+nuget Microsoft.AspNet.WebApi.Core
+nuget FSharp.Data
+nuget Microsoft.Owin.Testing
 
 github fsharp/FAKE modules/Octokit/Octokit.fsx

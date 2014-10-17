@@ -1,0 +1,7 @@
+Microsoft.AspNet.WebApi.Owin
+
+Microsoft.Owin.Host.SystemWeb
+
+Microsoft.AspNet.WebApi.Core
+
+FSharp.Data

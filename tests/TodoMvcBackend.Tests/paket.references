@@ -1,2 +1,5 @@
 NUnit
 NUnit.Runners
+Unquote
+
+Microsoft.Owin.Testing
